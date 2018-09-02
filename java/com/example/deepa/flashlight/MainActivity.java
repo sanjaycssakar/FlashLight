@@ -2,10 +2,16 @@ package com.example.deepa.flashlight;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.ActivityOptions;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 
 import android.os.Build;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.view.ActionMode;
 import android.support.v4.app.ActivityCompat;
 
@@ -13,64 +19,70 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.support.v7.widget.Toolbar;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
+
+import static android.support.v4.view.ViewCompat.setTransitionName;
 
 public  class MainActivity extends AppCompatActivity {
-    Button Flash;
     private android.support.v7.view.ActionMode actionMode1 = null;
     private final Flash flashes = new Flash();
-    public boolean flash;
+    public static boolean flash;
     private static final String TAG = "FlashApp";
-
+    public  FloatingActionButton floatingActionButton;
+public  ImageButton Flash;
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         flash = false;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Flash = (Button) findViewById(R.id.button);
-        Flash.setText("Turn on");
+
+       final ImageButton Flash = (ImageButton) findViewById(R.id.button);
         final boolean flashlifgt = permission();
         cameraHardware();
 
-        Flash.setOnClickListener(new View.OnClickListener() {
+
+        final CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.layout);
+
+Flash.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        coordinatorLayout.callOnClick();
+
+        }
+});
+
+        //screeen flash floating button
+        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.fabd);
+floatingActionButton.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        coordinatorLayout.cancelPendingInputEvents();
+        Intent intent = new Intent(MainActivity.this,screenBrightness.class);
+        startActivity(intent);
+    }
+});
+
+
+
+        //flash button
+        coordinatorLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 if (flashlifgt) {
-                    if (!flash) {
-                        flashes.on();
-                        Flash.setText("Turn OFF");
-                        flash = true;
-                    Snackbar snackbar = Snackbar.make(v,"flash id on",Snackbar.LENGTH_LONG);
-                    snackbar.show();
-                    snackbar.setAction("UNdO", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            flashes.off();
-                            Flash.setText("Turn ON");
-                            flash = false;
-                            Snackbar.make(v,"flash is oFF",Snackbar.LENGTH_SHORT).show();
-
-                        }
-                    });
-
-                    } else {
-                        flashes.off();
-                        Flash.setText("Turn ON");
-                        flash = false;
-                        Snackbar.make(v,"flash is oFF",Snackbar.LENGTH_LONG).show();
-
-                    }
+                   flashes.on();
+                    onsharedtransition(v);
                 }
-
             }
         });
-
 
         Toolbar ntoolbar = (Toolbar) findViewById(R.id.toolbar);
         ntoolbar.setTitle("FlashLight");
@@ -141,6 +153,17 @@ actionMode.setTitle("flashhh");
 actionMode1=null;
         }
     };
+
+public void  onsharedtransition(View view){
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+        View floatingAction= view.findViewById(R.id.fabd);
+
+        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(this,floatingAction,"transitionfab1");
+        Intent intent = new Intent(MainActivity.this,flashon.class);
+        startActivity(intent,options.toBundle());
+    }
+
+}
 
 
 }

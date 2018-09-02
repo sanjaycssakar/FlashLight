@@ -1,39 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-   android:id="@+id/layout"
+    android:id="@+id/layout2"
     style="@style/SettingsItemContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_weight="100"
-    android:background="@color/colorPrimary">
+    android:background="@color/grey">
 
     <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
+        android:id="@+id/toolbar1"
+        layout="@layout/toolbar"
+        />
 
     <ImageButton
-        android:id="@+id/button"
+        android:id="@+id/button2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:scaleType="fitXY"
-android:scaleX=".5"
+        android:scaleX=".5"
         android:scaleY=".5"
-        android:src="@drawable/flashoff"
-
+        android:src="@drawable/flashon"
+        android:transitionName="transitionfab1"
 
         />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fabd"
+        android:id="@+id/fabb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
+        android:layout_gravity="bottom|left"
         android:layout_marginBottom="30dp"
-app:fabSize="normal"
+        android:layout_marginLeft="30dp"
+        app:fabSize="normal"
         android:transitionName="transitionfab1"
+
         android:src="@drawable/ic_tablet_android_black_24dp"
-      />
+        />
 </android.support.design.widget.CoordinatorLayout>
