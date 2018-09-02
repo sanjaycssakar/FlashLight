@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
 
 import android.os.Build;
+import android.support.design.widget.Snackbar;
 import android.support.v7.view.ActionMode;
 import android.support.v4.app.ActivityCompat;
 
@@ -45,11 +46,25 @@ public  class MainActivity extends AppCompatActivity {
                         flashes.on();
                         Flash.setText("Turn OFF");
                         flash = true;
+                    Snackbar snackbar = Snackbar.make(v,"flash id on",Snackbar.LENGTH_LONG);
+                    snackbar.show();
+                    snackbar.setAction("UNdO", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            flashes.off();
+                            Flash.setText("Turn ON");
+                            flash = false;
+                            Snackbar.make(v,"flash is oFF",Snackbar.LENGTH_SHORT).show();
+
+                        }
+                    });
 
                     } else {
                         flashes.off();
                         Flash.setText("Turn ON");
                         flash = false;
+                        Snackbar.make(v,"flash is oFF",Snackbar.LENGTH_LONG).show();
+
                     }
                 }
 
