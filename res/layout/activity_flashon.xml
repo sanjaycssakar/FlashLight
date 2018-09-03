@@ -23,7 +23,6 @@
         android:scaleX=".5"
         android:scaleY=".5"
         android:src="@drawable/flashon"
-        android:transitionName="transitionfab1"
 
         />
 
@@ -35,7 +34,6 @@
         android:layout_marginBottom="30dp"
         android:layout_marginLeft="30dp"
         app:fabSize="normal"
-        android:transitionName="transitionfab1"
 
         android:src="@drawable/ic_tablet_android_black_24dp"
         />

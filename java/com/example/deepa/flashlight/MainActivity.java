@@ -4,36 +4,38 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
+import android.hardware.Camera;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraManager;
 import android.os.Build;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.view.ActionMode;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v4.app.ActivityCompat;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import android.support.v7.widget.Toolbar;
-import android.util.Pair;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
-import static android.support.v4.view.ViewCompat.setTransitionName;
 
 public  class MainActivity extends AppCompatActivity {
     private android.support.v7.view.ActionMode actionMode1 = null;
-    private final Flash flashes = new Flash();
-    public static boolean flash;
+
+    public static Camera mCamera = null;// has to be static, otherwise onDestroy() destroys it
+    public static boolean flash=false;
     private static final String TAG = "FlashApp";
     public  FloatingActionButton floatingActionButton;
 public  ImageButton Flash;
@@ -46,6 +48,7 @@ public  ImageButton Flash;
 
        final ImageButton Flash = (ImageButton) findViewById(R.id.button);
         final boolean flashlifgt = permission();
+        Log.d (TAG, "onCreate: "+permission ());
         cameraHardware();
 
 
@@ -54,8 +57,7 @@ public  ImageButton Flash;
 Flash.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
-        coordinatorLayout.callOnClick();
-
+       coordinatorLayout.callOnClick();
         }
 });
 
@@ -76,46 +78,73 @@ floatingActionButton.setOnClickListener(new View.OnClickListener() {
         coordinatorLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+if(flashlifgt){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-                if (flashlifgt) {
-                   flashes.on();
-                    onsharedtransition(v);
+                    CameraManager camManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+
+                    try {
+                        if (camManager != null) {
+                            String cameraId = camManager.getCameraIdList ()[0]; // Usually front camera is at 0 position.
+                            camManager.setTorchMode (cameraId, true);
+                        }
+                    } catch (CameraAccessException e) {
+                        e.printStackTrace ();
+                        alert ();
+
+                    } finally {
+                        onsharedtransition (v);
+
+                    }
+
                 }
+
+                else {
+                    Log.d (TAG, "onClick: "+flash);
+                    if(flash==false){
+                        cameraon();                    flash=true;
+                        Log.d (TAG, "onClick: flash is onnnnnnnnnnnnnn"+ flash);
+                    }
+                  else if(flash==true) {
+cameraoff ();
+flash=false;
+                        Log.d (TAG, "onClick: flash id offfffffffffff"+ flash);
+
+                }
+                }
+            }else{
+                     cameraalert();
+                          Log.d (TAG, "onClick: executed");
+            }
             }
         });
 
-        Toolbar ntoolbar = (Toolbar) findViewById(R.id.toolbar);
-        ntoolbar.setTitle("FlashLight");
 
 
-        Flash.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (actionMode1 != null) {
-                    return false;
-                }
-                actionMode1 = startSupportActionMode(mAction);
-                return true;
-            }
-        });
+
+
 
 
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
     public boolean permission() {
-        boolean permission = false;
-        if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-            if (checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 11);
-
-                return permission = true;
-            }
-        } else {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, 11);
-            return permission = true;
+        int a =1;
+        boolean bool=false;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA)
+                == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(MainActivity.this, new String[] {Manifest.permission.CAMERA}, 100);
+        bool=false;
+        if(a!=0){
+            permission ();
+            a--;
         }
-        return permission;
+        return bool;
+        }else
+        bool = true;
+        return bool;}
+        bool = true;
+        return bool;
     }
 
 
@@ -164,6 +193,75 @@ public void  onsharedtransition(View view){
     }
 
 }
+
+
+        public void cameraon() {
+            try {
+                mCamera = Camera.open ();
+                Camera.Parameters parameters = mCamera.getParameters ();
+                parameters.setFlashMode (Camera.Parameters.FLASH_MODE_TORCH);
+                mCamera.setParameters (parameters);
+                mCamera.startPreview ();
+            } catch (Exception e) {
+                e.printStackTrace ();
+            }
+        }
+
+        public void cameraoff() {
+            try {
+                Camera.Parameters parameters = mCamera.getParameters ();
+                parameters.setFlashMode (Camera.Parameters.FLASH_MODE_OFF);
+                mCamera.setParameters (parameters);
+                mCamera.stopPreview ();
+                mCamera.release ();
+                mCamera=null;
+
+            } catch (Exception e) {
+                e.printStackTrace ();
+            }
+        }
+
+
+
+
+    public void alert(){
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(MainActivity.this, R.style.Alert);
+        } else {
+            builder = new AlertDialog.Builder(MainActivity.this);
+        }
+        builder.setTitle("Camera App is Busy")
+                .setMessage("Camera Service is used by some other app, Please try again")
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish ();
+                    }
+                })
+                .setIcon(R.drawable.alertwar).create ()
+                .show();
+    }
+    public void cameraalert(){
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(MainActivity.this, R.style.Alert);
+        } else {
+            builder = new AlertDialog.Builder(MainActivity.this);
+        }
+        builder.setTitle("Permission needed!")
+                .setMessage("Camera permission is needed to access Flash")
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions((Activity)MainActivity.this, new String[]{Manifest.permission.CAMERA}, 100);
+                    }
+                })
+                .setIcon(R.drawable.alertwar).create ()
+                .show();
+
+    }
+
+
+
 
 
 }

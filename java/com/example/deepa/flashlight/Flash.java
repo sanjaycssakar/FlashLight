@@ -10,14 +10,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class Flash implements Closeable {
+public class Flash {
     private static final String TAG = "FLASH";
 
-    private static class CameraHolder {
-        public final Camera camera;
-        private final Camera.Parameters cameraParameters;
+  // private static class CameraHolder {
+        public  Camera camera;
+        private  Camera.Parameters cameraParameters;
 
-        public CameraHolder(Camera camera) {
+        public void  CameraHolder(Camera camera) {
             this.camera = camera;
             this.cameraParameters = camera.getParameters();
             cameraParameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
@@ -27,9 +27,13 @@ public class Flash implements Closeable {
             camera.setParameters(cameraParameters);
             camera.startPreview();
         }
+        public void off() {
+            camera.setParameters(cameraParameters);
+            camera.stopPreview();
+        }
     }
 
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+   /*private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private Future<CameraHolder> futureCamera;
 
     public static class CameraCallable implements Callable<CameraHolder> {
@@ -53,11 +57,13 @@ public class Flash implements Closeable {
         } else if (futureCamera.isDone()) {
             Camera prev;
             try {
-                prev = futureCamera.get().camera;
+                futureCamera.get().off();
+                Log.d(TAG, "off: camera accessed");
             } catch (Exception e) {
                 prev = null;
+                Log.d(TAG, "off: camera not accessed");
             }
-            futureCamera = executorService.submit(new CameraCallable(prev));
+         //   futureCamera = executorService.submit(new CameraCallable(prev));
         }
     }
 
@@ -89,6 +95,6 @@ public class Flash implements Closeable {
             }
         }
         futureCamera = null;
-    }
+    } */
 
-}
+

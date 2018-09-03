@@ -1,25 +1,33 @@
 package com.example.deepa.flashlight;
 
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.Camera;
+
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraManager;
 import android.os.Build;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
 
 public class flashon extends AppCompatActivity {
-    private final Flash flashes = new Flash();
-private final MainActivity flash= new MainActivity();
+    private static final String TAG = "flashon";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ContextCompat.getColor(this ,R.color.grey));
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);}
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flashon);
 
@@ -36,10 +44,23 @@ private final MainActivity flash= new MainActivity();
         coordinatorLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                flashes.off();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    CameraManager camManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+                    try {
+                        if(camManager != null){
+                        String cameraId = camManager.getCameraIdList()[0]; // Usually front camera is at 0 position.
+                        camManager.setTorchMode(cameraId, false);
+                        camManager=null;}
+
+                    } catch (CameraAccessException e) {
+                        e.printStackTrace();
+                    }
                     finishAfterTransition();
                 }
+
             }
         });
 

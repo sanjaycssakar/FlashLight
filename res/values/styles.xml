@@ -18,6 +18,16 @@
         <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
+    <style name="Alert" parent="android:Theme.Dialog">
+        <!-- Customize your theme here. -->
+        <item name="android:textColor">@color/grey</item>
+        <item name="android:shadowColor">@color/grey</item>
+        <item name="android:windowBackground">@color/colorPrimary</item>
+        <item name="android:textSize">10sp</item>
+
+    </style>
+
+
 
     <style name="SettingsItemContainer">
         <item name="windowActionModeOverlay">true</item>
