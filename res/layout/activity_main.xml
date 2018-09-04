@@ -14,15 +14,12 @@
 
     <ImageButton
         android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_gravity="center"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:scaleType="fitXY"
-android:scaleX=".5"
-        android:scaleY=".5"
-        android:src="@drawable/flashoff"
-
+        android:scaleType="center"
+        android:src="@drawable/flashoffl"
 
         />
 
@@ -33,7 +30,7 @@ android:scaleX=".5"
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="30dp"
 app:fabSize="normal"
-        android:transitionName="transitionfab1"
+
         android:src="@drawable/ic_tablet_android_black_24dp"
       />
 </android.support.design.widget.CoordinatorLayout>
