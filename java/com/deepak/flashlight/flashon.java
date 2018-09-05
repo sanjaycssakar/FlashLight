@@ -1,14 +1,13 @@
-package com.example.deepa.flashlight;
+package com.deepak.flashlight;
 
 import android.annotation.TargetApi;
-import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-
 import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -18,11 +17,12 @@ import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
+
+import com.deepak.flashlight.R;
 
 public class flashon extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String> {
     private static final String TAG = "flashon";
@@ -161,7 +161,7 @@ public class flashon extends AppCompatActivity implements LoaderManager.LoaderCa
         @Override
         public String loadInBackground() {
             stop stop = new stop ();
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 stop.stopflash ();
             }
             else{
